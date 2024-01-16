@@ -1,0 +1,50 @@
+.card{
+    color: aliceblue;
+    font-weight: lighter;
+    border-radius: 10px;
+    margin: 80px;
+    width: 400px;
+    height: 350px;
+    background-color: rgba(0, 0, 0, 0.664);
+    position: relative;
+    transform: translateZ(0);
+    transition: transform 0.35s ease-out;
+    cursor: pointer;
+}
+.card:hover{
+    transform: scale(1.03);
+    transition: 0.3s;
+}
+
+
+.image{
+    width: 180px;
+    height: 180px;
+    border-radius: 30px;
+    position: absolute;
+    left: 110px;
+    bottom: 140px;
+
+}
+
+.nameTeams{ 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: end;
+    padding-bottom: 10px;
+ }
+
+
+ .name {
+    font-size: 25px;
+    padding-bottom: 30px;
+    font-weight: 700;
+ }
+
+
+ .link{
+    color: aliceblue;
+    text-decoration: none;
+    font-style: italic;
+ }

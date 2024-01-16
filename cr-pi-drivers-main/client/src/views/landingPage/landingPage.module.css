@@ -1,0 +1,47 @@
+
+.background {
+    background-image: url('./img/backgroundF1.jpg');
+    width: 100vw;
+    height: 100vw;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 0;
+    text-align: center;
+}
+
+
+.container{
+    line-height: 170px; 
+    text-align: center;
+}
+
+
+.button{
+    background-color: #DC0000;
+    width: 150px;
+    height: 60px;
+    font-size: 25px;
+    border-radius: 20px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-style: italic
+}
+
+.button:hover{
+    background-color: rgb(0, 0, 0);
+    transform: scale(1.1);
+    transition: 0.7s;
+}
+
+.f{
+    color: #DC0000;
+}
+
+.title{
+    font-size: 80px;
+    color: red;
+    cursor: default;
+    font-style: italic;
+}

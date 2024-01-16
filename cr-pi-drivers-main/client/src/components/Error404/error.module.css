@@ -1,0 +1,39 @@
+.page {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color:black;
+}
+
+.error {
+    font-size: 45px;
+    margin-bottom: 50px;
+    color: white;
+}
+.h1{
+    margin-bottom: 20px;
+    color: white;
+}
+.goBack{
+    text-align: center;
+}
+.button{
+    background-color: rgb(185, 3, 3);
+    width: 150px;
+    height: 60px;
+    font-size: 25px;
+    border-radius: 20px;
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-style: italic
+}
+
+.button:hover{
+    transform: scale(1.1);
+    transition: 0.7s;
+}

@@ -1,0 +1,133 @@
+.background {
+    background-image: url('./img/background.jpg');
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 30px;
+}
+
+
+.button {
+    width: 80px;
+    height: 40px;
+    border-radius: 5px;
+    margin-left: 30px;
+    background-color: black;
+    border-style: none;
+    color: aliceblue;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.button:hover{
+    transform: scale(1.1);
+    transition: 0.7s;
+}
+
+.title{
+    display: flex;
+    justify-content: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 800px;
+}
+
+.box {
+
+    width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    border-style: none;
+    padding-left: 20px;
+    font-size: 18px;
+    font-style: italic;
+    border: 1px solid red;
+}
+
+.everyInput {
+    display: flex;
+    flex-direction: column;
+}
+
+.error {
+    margin-top: 5px;
+    padding: 2px;
+    border-radius: 5px;
+    background-color: rgba(255, 0, 0, 0.61);
+    color: rgba(255, 255, 255, 0.856);
+    font-size: 15px;
+}
+
+.label {
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 700;
+    color: rgb(226, 216, 216);
+}
+
+.containerForm {
+    padding: 30px 0px 30px 0px;
+    width: 30vw;
+    background-color: rgb(0, 0, 0);
+    margin: 0px auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.li {
+    list-style-type: none;
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 5px;
+    font-weight: 700;
+    color: rgb(226, 216, 216);
+}
+
+.selected {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+.teamSelected {
+    text-align: center;
+}
+
+.p{
+    font-weight: 700;
+    color: aliceblue;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 5px;
+    background-color: rgba(255, 0, 0, 0.377);
+    cursor: pointer;
+}
+
+
+.createButton {
+    background-color: rgb(214, 13, 13);
+    margin-top: 15px;
+    width: 110px;
+    height: 40px;
+    font-weight: 700;
+    font-style: italic;
+    border-radius: 5px;
+    border-style: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.918);
+}
+
+.createButton:hover {
+    color: rgb(214, 13, 13);
+    background-color: rgba(255, 255, 255, 0.918);
+    transform: scale(1.1);
+    transition: 0.7s;
+}

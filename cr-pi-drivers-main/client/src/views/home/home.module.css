@@ -1,0 +1,11 @@
+.home{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    /* width: 100%; */
+    background: linear-gradient(
+        to right,
+         rgb(37, 17, 17) 0%,
+         rgb(192, 9, 9) 100% 
+    );
+}
