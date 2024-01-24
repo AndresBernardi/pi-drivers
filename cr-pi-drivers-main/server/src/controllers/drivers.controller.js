@@ -1,50 +1,62 @@
 const axios = require("axios");
 const { Driver, Team } = require("../db");
 const { where } = require("sequelize");
+const { Op } = require("sequelize"); 
 
-const cleanArrayAPI = (array) => {
-  return{
-    id: array.id,
-    forename: array.name.forename,
-    surname: array.name.surname,
-    description: array.description,
-    image: array.image.url ? array.image.url : "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg",
-    nationality: array.nationality,
-    birthdate: array.dob,
-    created: false,
-  }
-}
-const getDrivers = async (req, res) => {
+const cleanArrApi = (arr) =>
+  arr.map((elem) => {
+    return {
+      id: elem.id,
+      forename: elem.name.forename,
+      surname: elem.name.surname,
+      birthdate: elem.dob,
+      image: elem.image.url,
+      teams: elem.teams,
+      nationality: elem.nationality,
+      description: elem.description,
+      created: false,
+    };
+  });
 
-  const driversAPI = await axios.get('http://localhost:5000/drivers').then((res)=> res.data)
-  const driversMapped = driversAPI.map((driver)=> cleanArrayAPI(driver))
-  res.status(200).json(driversMapped)
-}
-
-const cleanArrayDB = ({forename, surname, description, image, nationality, birthdate, teams}) => {
- // const teamNames = array.teams.map((team) => team.name).join(",");
-  return {
-    forename,
-    surname,
-    description,
-    image,
-    nationality,
-    birthdate,
-    //teams: teamNames,
-    created: true,
-  };
-};
-
+  const cleanArrDB = (arr) =>
+  arr.map((elem) => {
+      return {
+          id: elem.id,
+          forename: elem.forename,
+          surname: elem.surname,
+          birthdate: elem.birthdate,
+          image: elem.image,
+          teams: elem.teams, // Convertir la lista de equipos en una cadena de texto
+          nationality: elem.nationality,
+          description: elem.description,
+          created: true,
+      }
+  })
+  
+  
 const driverId = async (id) => {
   
   const src = isNaN(id) ? "DB" : "API";
-  const driverId =
-    src == "API"
-      ? cleanArrayAPI(
-          (await axios.get(`http://localhost:5000/drivers/${id}`)).data
-        )
-      : cleanArrayDB(await Driver.findByPk(id, { include: Team }));
-  return driverId;
+  if(src == "API"){
+   const response = await axios.get(`http://localhost:5000/drivers/${id}`);
+   const responseData = response.data
+    return {
+      id: responseData.id,
+      forename: responseData.name.forename,
+      surname: responseData.name.surname,
+      image: responseData.image.url,
+      birthdate : responseData.dob,
+      nationality : responseData.nationality,
+      teams: responseData.teams,
+      description: responseData.description,
+    }
+  }else if(src == 'DB'){
+    const driverId = await Driver.findByPk(id, { include: Team });
+    return driverId
+  } else{
+    return "No se encontro el driver"
+  }
+
 };
 
 const getDriverById = async (req, res) => {
@@ -57,24 +69,60 @@ const getDriverById = async (req, res) => {
   }
 };
 
+  const allDrivers = async (req, res) => {
+    const dataDB = await Driver.findAll({
+      include: Team,
+    });
+  
+    const driversFromDB = cleanArrDB(dataDB);
+  
+    const apiData = (await axios.get("http://localhost:5000/drivers")).data;
+    const driversFromApi = cleanArrApi(apiData);
+    const combinedData = [...driversFromApi, ...driversFromDB];
+    return combinedData;
+  };
+  
+  const searchDriverByName = async (name) => {
+    const lowerCaseName = name.toLowerCase(); //
+    try{
+    const dbDrivers = await Driver.findAll({
+      where: {
+        forename: {
+          [Op.iLike]: `%${lowerCaseName}%`,
+        },
+      },
+      include: Team, // Incluir la relación con los equipos
+    });
+  
+    const apiData = (await axios.get("http://localhost:5000/drivers"));
+    const apiDataDrivers = apiData.data;
+    const apiDrivers = cleanArrApi(apiDataDrivers);
+  
+
+    const filteredApiDrivers = apiDrivers.filter(
+      (driver) => driver.forename.toLowerCase() === lowerCaseName
+    );
+  
+    const combinedData = [...filteredApiDrivers, ...dbDrivers];
+  
+    return combinedData;
+  }catch(error){
+    console.log('Ocurrio un error!')
+  }
+  }
+  const getDrivers = async (req, res) => {
+    const { name } = req.query;
+    const results = name ? await searchDriverByName(name) : await allDrivers();
+  
+    res.status(200).json(results);
+  };
+
 //Get Driver By Name
-const getDriversByName = async(name) => {
-    
-  const name2 = name.toLowerCase();
-  const drivers = await getDrivers();
-  const resultadoNombre = drivers.filter((driver) => driver.name.toLowerCase().includes(name2));
-
-  if(resultadoNombre.length > 15) {
-      const sliced = resultadoNombre.slice(0,15)
-      return sliced;
-  }
-  else if(resultadoNombre.length < 15){
-      return resultadoNombre;
-  }
-  else{
-      throw new Error('No existe ningún piloto con el nombre especificado')
-  }
-
+const getDriversByName = async(req, res) => {
+  const name = req.query.name
+  const allDrivers = await allDriversController()
+  const driversByName = allDrivers.filter((driver)=> driver.forename.toLowerCase().includes(name.toLowerCase()))
+  res.status(200).json(driversByName)
 }
 
 //Post Drivers

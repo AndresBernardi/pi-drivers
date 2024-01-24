@@ -1,73 +1,179 @@
-import axios from 'axios'
-import {GET_ALL_DRIVERS, GET_ALL_TEAMS, GET_BY_NAME, ORDER_BY_NAME, ORDER_BY_BIRTHDATE_ASC, ORDER_BY_BIRTHDATE_DESC, FILTER_BY_ORIGIN, FILTER_BY_TEAM, GET_BY_DETAIL, RESET_DETAIL, CREATE_NEW_DRIVER}
-from './action-types'
+import axios from "axios";
+import {
+  GET_DRIVERS,
+  SET_TOTAL_PAGE,
+  SET_PAGE,
+  SEARCH_DRIVERS,
+  GET_TEAMS,
+  CREATE_DRIVER,
+  FILTER_BY_TEAM,
+  FILTER_BY_ORIGIN,
+  SORT_ORDER,
+  UPDATE_ORDER,
+  CLEAN_FILTER,
+  SET_CLEAN,
+  UPDATE_SORTED_LIST_BY_DATE,
+  TOGGLE_SORT_ORDER_BY_DATE,
+} from "./actionType";
 
+const URL = "http://localhost:3001";
 
-export const getAllDrivers = () => {
-    return async function(dispatch){
-        const response = await axios('http:localhost:3001/drivers')
-        return dispatch({type: GET_ALL_DRIVERS, payload: response.data})
+// Accion para consultar todos los drivers
+export function allDrivers() {
+  return async function (dispatch) {
+    const service = await axios(URL + "/drivers");
+    const allDriversData = service.data;
+
+    dispatch({
+      type: GET_DRIVERS,
+      payload: allDriversData,
+    });
+
+    dispatch(setTotalPage());
+  };
+}
+
+// Accion para consultar teams
+export function allTeams() {
+  return async function (dispatch) {
+    const service = await axios(URL + "/teams");
+    const allTeamsData = service.data;
+
+    dispatch({
+      type: GET_TEAMS,
+      payload: allTeamsData,
+    });
+  };
+}
+
+// Acción para buscar por nombre
+export function onSearchName(name) {
+  return async function (dispatch) {
+    try {
+      // Realizar la búsqueda por nombre
+      const response = await axios.get(`${URL}/drivers?name=${name}`);
+
+      dispatch({
+        type: SEARCH_DRIVERS,
+        payload: response.data, // Asume que la API devuelve los resultados
+      });
+    } catch (error) {
+      console.error("Cannot find by name:", error);
+    } finally {
+      dispatch(setTotalPage());
     }
+  };
 }
 
-export const getAllTeams = ()=>{
-    return async function(dispatch){
-        const response = await axios('http:localhost:3001/teams')
-        let teamList = response.data.map((team=>team.name))
-        return dispatch({type: GET_ALL_TEAMS, payload: teamList})
+// Accion para crear un nuevo driver
+export function createNewDriver(payload) {
+  return async function (dispatch) {
+    try {
+      const service = await axios.post(URL + "/drivers", payload);
+
+      dispatch({
+        type: CREATE_DRIVER,
+        payload,
+      });
+
+      if (service.status === 201) {
+        alert("Successfully created");
+      }
+    } catch (error) {
+      if (error.response.status === 400) {
+        alert("Driver already exists");
+      } else if (error.response.status === 404) {
+        alert("Internal server error");
+      }
     }
-}
-
-export const orderByName = (payload)=>{
-    console.log('Action: orderByName, payload:', payload)
-    return {type: ORDER_BY_NAME, payload}
-    
-}
-
-export const orderByBirthdateAsc = ()=>{
-    return {type: ORDER_BY_BIRTHDATE_ASC}
-}
-
-export const orderByBirthdateDesc = ()=>{
-    return {type: ORDER_BY_BIRTHDATE_DESC}
-}
-
-export const filterByOrigin = (payload)=>{
-    return {type: FILTER_BY_ORIGIN, payload}
-}
-
-export const filterByTeam = (payload)=>{
-    return {type: FILTER_BY_TEAM, payload}
+  };
 }
 
 
-export const getByName = (name)=>{
-    return async function(dispatch){
-        try {
-            const response = await axios(`http://localhost:3001/drivers/?name=${name}`)
-            return dispatch({type: GET_BY_NAME, payload: response.data})
-        } catch (error) {
-            console.log(error)
-        }
+// Accion para filtrar por teams
+export function filteredByTeam(option) {
+  return (dispatch) => {
+    dispatch({
+      type: FILTER_BY_TEAM,
+      payload: option,
+    });
+
+    dispatch(setTotalPage());
+  };
+}
+
+// Accion para definir el total de las paginas
+export function setTotalPage() {
+  return {
+    type: SET_TOTAL_PAGE,
+  };
+}
+
+// Accion para definir la pagina actual
+export const setPage = (pageNumber) => ({
+  type: SET_PAGE,
+  payload: pageNumber,
+});
+
+// Accion para filtrar por origen
+export function filterByOrigin(option) {
+  return (dispatch) => {
+    dispatch({
+      type: FILTER_BY_ORIGIN,
+      payload: option,
+    });
+
+    dispatch(setTotalPage());
+  };
+}
+
+// Accion para definir ordenamiento
+export const toggleSortOrder = () => ({
+  type: SORT_ORDER,
+});
+
+// Accion para actualizar ordenamiento
+export const updateSortedList = (sortedList) => ({
+  type: UPDATE_ORDER,
+  payload: sortedList,
+});
+
+// Accion para actualizar el estado de limpieza
+export function setClean(isClean) {
+  return {
+    type: SET_CLEAN,
+    payload: isClean,
+  };
+}
+
+// Accion para limpiar filtros
+export function cleanFilter() {
+  return async function (dispatch) {
+    try {
+      dispatch(setClean(true));
+
+      dispatch({
+        type: CLEAN_FILTER,
+      });
+
+      dispatch(setTotalPage());
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      dispatch(setClean(false));
+    } catch (error) {
+      console.log(error);
     }
+  };
 }
 
-export const getByDetail = (id) =>{
-    return async function(dispatch){
-        let response = await axios(`http://localhost:3001/drivers/${id}`)
-        return dispatch({type: GET_BY_DETAIL, payload: response.data})
-    }
-}
+// Acción para alternar el orden de fecha de nacimiento (ascendente o descendente)
+export const toggleSortOrderByDate = () => ({
+  type: TOGGLE_SORT_ORDER_BY_DATE,
+});
 
-export const createNewDriver =(payload)=>{
-    return async function(dispatch){
-        const newDriver = await axios.post('http://localhost:3001/drivers', payload)
-        return newDriver
-    }
-}
-
-export const resetDetail = ()=>{
-    return{
-        type: RESET_DETAIL
-    }
-}
+// Acción para actualizar la lista ordenada por fecha de nacimiento
+export const updateSortedListByDate = (sortedList) => ({
+  type: UPDATE_SORTED_LIST_BY_DATE,
+  payload: sortedList,
+});

@@ -1,26 +1,20 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
-
-//Views
-import Home from './views/home/home.jsx'
-import LandingPage from './views/landingPage/landingPage.jsx'
-import Detail from './views/detail/detail.jsx'
-import Create from './views/create/create.jsx'
-import Error404 from './components/Error404/Error404.jsx'
-
-import './App.css'
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import Landing from "./Components/Views/Landing/Landing";
+import Home from "./Components/Views/Home/HomePage/Home";
+import Detail from "./Components/Views/Detail/Detail";
+import Form from "./Components/Views/Form/Form";
 
 function App() {
   return (
-    <div className='App.css'>
+    <div className="App">
       <Routes>
-        <Route path='/' element={<LandingPage/>}/>
-        <Route exact path='/home' element={<Home/>}/> 
-        <Route path='/home/:id' element={<Detail/>}/>
-        <Route path='/create' element={<Create/>}/>
-        <Route path='*' element={<Error404/>}/>
+        <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/create" element={<Form />} />
+        <Route path="/detail/:id" element={<Detail />} />
       </Routes>
     </div>
-)
+  );
 }
 
-export default App
+export default App;

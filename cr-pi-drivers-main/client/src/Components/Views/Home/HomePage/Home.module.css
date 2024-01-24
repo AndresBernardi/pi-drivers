@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-image: url('../../../../../public/assets/backgroundImage.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+.homeContainer {
+    background-image: url('../../../../../public/assets/backgroundImage.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
